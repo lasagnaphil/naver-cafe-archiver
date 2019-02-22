@@ -24,12 +24,12 @@ def main():
 
     # selenium_login(driver, club_name, club_max_article_id, naver_id, naver_pw)
 
-    list_url_template = "https://cafe.naver.com/snugdc?iframe_url=/ArticleList.nhn%3FuserDisplay=50%26search.page={}"
+    list_url_template = "https://cafe.naver.com/{}?iframe_url=/ArticleList.nhn%3FuserDisplay=50%26search.page={}"
 
     print('게시판 목록을 스캔하는 중...')
     article_ids = []
     for list_page_id in itertools.count(start=1):
-        list_url = list_url_template.format(list_page_id)
+        list_url = list_url_template.format(club_name, list_page_id)
         driver.get(list_url)
         driver.switch_to.frame('cafe_main')
         new_article_ids = parse_article_ids(driver.page_source)
