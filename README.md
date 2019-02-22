@@ -1,6 +1,6 @@
 # naver-cafe-archiver
 
-A web-crawler/archiver for NAVER cafe
+A web-crawler/archiver for NAVER cafe (Work in progress)
 
 네이버 카페를 아카이빙하기 위한 도구
 
@@ -13,9 +13,9 @@ selenium 설정은 https://selenium-python.readthedocs.io/installation.html 에�
 
 # TODO
 
-- [ ] 로그인 (현재는 수동으로 해야함)
-- [ ] 크롤링
-    - [ ] 기초적인 파싱 (제목, 작가, 내용 텍스트)
+- [*] 로그인 (현재는 수동으로 해야함)
+- [*] 크롤링
+    - [*] 기초적인 파싱 (제목, 작가, 내용 텍스트)
     - [ ] 이미지/동영상 다운로드
     - [ ] 첨부파일 다운로드
 - [ ] 저장
