@@ -7,7 +7,7 @@ class FileDownloader(ThreadPoolExecutor):
     def __init__():
         super.__init__(max_workers=4)
 
-    def download_urls(urls: List[str]) -> List[uuid.UUID]
+    def download_urls(urls: List[str]) -> List[uuid.UUID]:
         def download_url(url: str) -> uuid.UUID:
             m = re.match(r"\.(\w+)$", url)
             extension = m.group(1)

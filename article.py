@@ -6,6 +6,12 @@ import uuid
 from file_downloader import FileDownloader
 
 @dataclass
+class ArticleMetaData:
+    images: List[uuid.UUID]
+    videos: List[uuid.UUID]
+    files: List[uuid.UUID]
+
+@dataclass
 class ArticleData:
     title: str
     bulletin: str
@@ -14,11 +20,6 @@ class ArticleData:
     author_rank: str
     content: str
     metadata: Optional[ArticleMetaData]
-
-class ArticleMetaData:
-    images: List[uuid.UUID]
-    videos: List[uuid.UUID]
-    files: List[uuid.UUID]
 
 def parse_article_ids(html_doc: str) -> Optional[List[int]]:
     soup = bs(html_doc, 'html.parser')
