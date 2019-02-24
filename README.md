@@ -6,11 +6,12 @@ A web-crawler/archiver for NAVER cafe (Work in progress)
 
 # Install
 
-virtualenv 혹은 conda를 사용하는 것을 권장.
+- 파이썬 3.7+에서 구동. 현재로서는 리눅스에서만 테스트해봄.
 
-설치해야 할 패키지들: selenium, bs4, sqlite3
+- 설치해야 할 패키지들: selenium, bs4, peewee, tqdm
+    - 패키지 설치는 virtualenv 혹은 conda를 사용하는 것을 권장.
 
-selenium 설정은 https://selenium-python.readthedocs.io/installation.html 에서 1.1 ~ 1.4 참조.
+- selenium 설정은 https://selenium-python.readthedocs.io/installation.html 에서 1.1 ~ 1.4 참조.
 
 # TODO
 
@@ -20,7 +21,7 @@ selenium 설정은 https://selenium-python.readthedocs.io/installation.html 에�
     - [ ] 이미지/동영상 다운로드
     - [ ] 첨부파일 다운로드
 - [ ] 저장
-    - [ ] 글 내용을 보기 좋은 HTML로 가공
-    - [ ] 파일 단위로 덤프
-    - [ ] SQLite 덤프
+    - [x] SQLite로 저장
     - [ ] JSON 덤프
+- [ ] 서버
+    - [ ] Flask를 통해 웹페이지로 데이터 보기

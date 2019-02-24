@@ -1,1 +1,3 @@
 geckodriver.log
+*.db
+__pycache__/**
