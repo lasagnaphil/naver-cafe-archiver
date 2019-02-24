@@ -12,8 +12,9 @@ from itertools import zip_longest
 import argparse
 from typing import Optional, List, Iterable
 
-from article import ArticleData, parse_article
+from article import ArticleData, parse_article_ids, parse_article
 from database import DBManager
+from file_downloader import FileDownloader
 
 def take(n, iterable):
     return list(islice(iterable, n))
@@ -76,14 +77,16 @@ def download(args):
 
     print('게시물을 다운로드하는 중...')
     page_url_template = 'https://cafe.naver.com/{}/{}'
+    dl = FileDownloader()
 
     for article_id in tqdm(article_ids):
         page_url = page_url_template.format(args.cafe_name, article_id)
         driver.get(page_url)
         driver.switch_to.frame('cafe_main')
-        article = parse_article(driver.page_source, args.use_plain_text)
+        article = parse_article(dl, driver.page_source, args.use_plain_text)
         db.insert_article(article)
 
+    dl.shutdown()
     db.cleanup()
 
 # Reference: https://yahwang.github.io/posts/4
@@ -105,20 +108,6 @@ def selenium_login(driver, cafe_name: str, naver_id: str, naver_pw: str):
         driver.find_element_by_name('pw').send_keys(c)
     time.sleep(random.uniform(1,3)) 
     driver.find_element_by_css_selector('#frmNIDLogin > fieldset > input').click()
-
-def parse_article_ids(html_doc: str) -> Optional[List[int]]:
-    soup = bs(html_doc, 'html.parser')
-
-    # If article list does not exist anymore, abort and return None
-    article_album_sub = soup.select_one('ul.article-album-sub')
-    if article_album_sub:
-        none_text = article_album_sub.select_one('span.m-tcol-c').get_text()
-        if '없습니다' in none_text:
-            return None
-    
-    trs = soup.select('div.article-board')[1].select_one('table.board-box').tbody.find_all('tr', attrs={"align": "center"})
-    article_ids = [int(tr.select_one('span.list-count').get_text()) for tr in trs]
-    return article_ids
 
 def export(args):
     print('TODO...')
