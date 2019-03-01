@@ -1,33 +1,42 @@
 import urllib
 import uuid
 from typing import List
+import concurrent.futures
 from concurrent.futures import ThreadPoolExecutor, Future
+import re
+
+def download_url_blocking(url: str, filename: str) -> uuid.UUID:
+    print('Downloading {} from url {}'.format(filename, url))
+    with urllib.request.urlopen(url) as conn:
+        with open(filename, 'wb') as f:
+            f.write(conn.read())
+    print('Downloading {} finished!'.format(filename))
 
 class FileDownloader(ThreadPoolExecutor):
-    def __init__():
-        super.__init__(max_workers=4)
+    def __init__(self):
+        ThreadPoolExecutor.__init__(self, max_workers=4)
+        self.url_regex = re.compile(r"\.(\w+)(\?type=\w+)?$")
+        self.futures = []
 
-    def download_urls(urls: List[str]) -> List[uuid.UUID]:
-        def download_url(url: str) -> uuid.UUID:
-            m = re.match(r"\.(\w+)$", url)
-            extension = m.group(1)
+    def download_url(self, url: str) -> uuid.UUID:
+        match = self.url_regex.match(url)
+        if match:
+            extension = match.group(1)
+        else:
+            extension = 'jpeg'
+        file_uuid = uuid.uuid4()
+        filename = "{}.{}".format(file_uuid, extension)
 
-            file_uuid = uuid.uuid4()
-            with urllib.request.urlopen(url, timeout=timeout) as conn:
-                with open("{}.{}".format(file_uuid, extension), 'b+w') as f:
-                    f.write(conn.read())
+        future = self.submit(download_url_blocking, url, filename)
+        self.futures.append(future)
 
-            return file_uuid
+        return file_uuid
 
-        uuids = []
-        future_to_url = {self.submit(download_url): url for url in urls}
-        for future in concurrent.futures.as_completed(future_to_url):
-            url = future_to_url[future]
-            try:
-                uuid = future.result()
-            except Exception as ex:
-                print('Exception while downloading URL {}: {}'.format(url, ex))
-            else:
-                print('Downloaded URL {} -> UUID {}'.format(url, uuid))
-                uuids.append(uuid)
-        return uuids
+    def finish(self):
+        concurrent.futures.wait(self.futures)
+
+fd = FileDownloader()
+for i in range(100):
+    fd.download_url('https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?type=asdf')
+fd.finish()
+fd.shutdown()
