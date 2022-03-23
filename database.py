@@ -36,6 +36,7 @@ class DBManager:
         global db
         db.create_tables([User, Bulletin, Article])
 
+    @staticmethod
     def atomic():
         global db
         return db.atomic()

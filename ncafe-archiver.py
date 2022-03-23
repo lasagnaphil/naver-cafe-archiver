@@ -74,6 +74,7 @@ def download(args):
         if new_article_ids is None:
             break
         article_ids.extend(new_article_ids)
+        break # Temp
 
     print('게시물을 다운로드하는 중...')
     page_url_template = 'https://cafe.naver.com/{}/{}'
