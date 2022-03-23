@@ -5,6 +5,7 @@ from tqdm import tqdm
 
 import sys
 import time
+import re
 import random
 import getpass
 import itertools
@@ -106,18 +107,19 @@ def selenium_login(driver, cafe_name: str, naver_id: str, naver_pw: str):
     time.sleep(random.uniform(1,3)) 
     driver.find_element_by_css_selector('#frmNIDLogin > fieldset > input').click()
 
+article_id_regex = re.compile(r"articleid=([0-9]+)")
+
 def parse_article_ids(html_doc: str) -> Optional[List[int]]:
     soup = bs(html_doc, 'html.parser')
 
     # If article list does not exist anymore, abort and return None
-    article_album_sub = soup.select_one('ul.article-album-sub')
+    article_album_sub = soup.select_one('div.nodata')
     if article_album_sub:
-        none_text = article_album_sub.select_one('span.m-tcol-c').get_text()
-        if '없습니다' in none_text:
-            return None
+        return None
     
-    trs = soup.select('div.article-board')[1].select_one('table.board-box').tbody.find_all('tr', attrs={"align": "center"})
-    article_ids = [int(tr.select_one('span.list-count').get_text()) for tr in trs]
+    links = soup.select('div.article-board')[1].select('a.article')
+    article_ids = [int(re.search(article_id_regex, link.get('href'))[1]) for link in links]
+
     return article_ids
 
 def export(args):
